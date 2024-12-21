@@ -55,3 +55,28 @@ func (s *RedisStorage) QueueLength() int64 {
     }
     return length
 }
+
+func (s *RedisStorage) ExtractURL() (models.URL, error) {
+    keys, err := s.client.Keys(s.ctx, "*").Result()
+    if err != nil {
+        return models.URL{}, err
+    }
+    if len(keys) == 0 {
+        return models.URL{}, nil
+    }
+    key := keys[0]
+    data, err := s.client.Get(s.ctx, key).Result()
+    if err != nil {
+        return models.URL{}, err
+    }
+    var url models.URL
+    err = json.Unmarshal([]byte(data), &url)
+    if err != nil {
+        return models.URL{}, err
+    }
+    err = s.client.Del(s.ctx, key).Err()
+    if err != nil {
+        return models.URL{}, err
+    }
+    return url, nil
+}
