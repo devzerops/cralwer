@@ -39,7 +39,7 @@ This project provides a distributed crawler API. You can use this API to start c
 ### Endpoints
 
 - `GET /`: Returns information about available endpoints and example usage.
-- `POST /crawl`: Starts crawling a URL. The request body should include the `url` in JSON format.
+- `POST /add-url`: Starts crawling a URL. The request body should include the `url` in JSON format.
 
 ### Example Requests
 
@@ -58,7 +58,7 @@ This project provides a distributed crawler API. You can use this API to start c
 - Start crawling a URL
 
     ```sh
-    curl -X POST -H "Content-Type: application/json" -d '{"url":"http://example.com"}' http://localhost:8080/crawl
+    curl -X POST -H "Content-Type: application/json" -d '{"url":"http://example.com"}' http://localhost:8080/add-url
     ```
 
 ## File Structure

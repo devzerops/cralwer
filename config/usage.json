@@ -3,7 +3,7 @@
     "endpoints": [
         {
             "method": "POST",
-            "path": "/crawl",
+            "path": "/add-url",
             "description": "Start crawling a URL. Example request body: {\"url\": \"http://google.com\"}"
         },
         {
@@ -17,5 +17,5 @@
             "description": "Extract the next URL from the Redis queue. Example request: /next?count=1"
         }
     ],
-    "example_usage": "curl -X POST -H \"Content-Type: application/json\" -d '{\"url\":\"http://google.com\"}' http://localhost:8080/crawl\ncurl http://localhost:8080/status\ncurl http://localhost:8080/next?count=1"
+    "example_usage": "curl -X POST -H \"Content-Type: application/json\" -d '{\"url\":\"http://google.com\"}' http://localhost:8080/add-url\ncurl http://localhost:8080/status\ncurl http://localhost:8080/next?count=1"
 }
