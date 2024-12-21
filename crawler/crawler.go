@@ -26,6 +26,7 @@ func (c *Crawler) Crawl(startURL string) {
     if err != nil {
         log.Fatalf("Invalid start URL: %v", err)
     }
+    c.Storage.Save(models.URL{Address: startURL, Priority: 0})
 
     // On every a element which has href attribute call callback
     collector.OnHTML("a[href]", func(e *colly.HTMLElement) {
@@ -46,13 +47,6 @@ func (c *Crawler) Crawl(startURL string) {
         log.Printf("Found link: %s", absoluteURL)
         // Save the link to storage
         c.Storage.Save(models.URL{Address: absoluteURL, Priority: 1})
-    })
-    collector.OnHTML("body", func(e *colly.HTMLElement) {
-        // parsing 
-        content := e.Text
-        log.Printf("Found content: %s", content)
-        // Save the content to storage
-        //c.Storage.SaveContent(models.Content{URL: e.Request.URL.String(), Data: content})
     })
 
 

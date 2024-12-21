@@ -56,7 +56,7 @@ func (s *RedisStorage) QueueLength() int64 {
     return length
 }
 
-func (s *RedisStorage) ExtractURL() (models.URL, error) {
+func (s *RedisStorage) NextURL() (models.URL, error) {
     keys, err := s.client.Keys(s.ctx, "*").Result()
     if err != nil {
         return models.URL{}, err
