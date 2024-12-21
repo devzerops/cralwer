@@ -10,6 +10,7 @@ import (
 // @GET("/")
 // @GET("/status")
 // @GET("/next")
+// @GET("/health")
 type Usage struct {
     Message   string `json:"message"`
     Endpoints []struct {
@@ -33,5 +34,7 @@ func NewRouter() *mux.Router {
     router.HandleFunc("/", GuideHandler).Methods("GET")
     router.HandleFunc("/status", StatusHandler).Methods("GET")
     router.HandleFunc("/next-url", NextURLHandler).Methods("GET")
+    router.HandleFunc("/health", HealthHandler).Methods("GET")
     return router
 }
+

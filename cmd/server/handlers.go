@@ -90,3 +90,10 @@ func NextURLHandler(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(urls)
 }
+
+// @GET /health
+// HealthHandler handles the "/health" endpoint, providing a simple health check.
+func HealthHandler(w http.ResponseWriter, r *http.Request) {
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("OK"))
+}
