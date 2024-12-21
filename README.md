@@ -6,7 +6,7 @@ This project provides a distributed crawler API. You can use this API to start c
 
 ### Requirements
 
-- Go 1.16 or higher
+- Go 1.23.4 or higher
 - Git
 
 ### Installation
@@ -42,6 +42,12 @@ This project provides a distributed crawler API. You can use this API to start c
 - `POST /crawl`: Starts crawling a URL. The request body should include the `url` in JSON format.
 
 ### Example Requests
+
+- Create Redis Server
+
+    ``` bash
+    docker-compose up -d 
+    ```
 
 - Get available endpoints
 
