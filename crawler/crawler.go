@@ -47,6 +47,14 @@ func (c *Crawler) Crawl(startURL string) {
         // Save the link to storage
         c.Storage.Save(models.URL{Address: absoluteURL, Priority: 1})
     })
+    collector.OnHTML("body", func(e *colly.HTMLElement) {
+        // parsing 
+        content := e.Text
+        log.Printf("Found content: %s", content)
+        // Save the content to storage
+        //c.Storage.SaveContent(models.Content{URL: e.Request.URL.String(), Data: content})
+    })
+
 
 
     // Start scraping the URL
