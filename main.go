@@ -1,7 +1,8 @@
 package main
 
 import (
-	"distributed-crawler/server"
+	"distributed-crawler/cmd/server"
+	"distributed-crawler/cmd/worker"
 	"log"
 	"net/http"
 )
@@ -9,7 +10,7 @@ import (
 func main() {
 	serverRouter := server.NewRouter()
 	log.Fatal(http.ListenAndServe(":8080", serverRouter))
-	
-	// workerRouter := worker.NewRouter()
-	// log.Fatal(http.ListenAndServe(":8081", workerRouter))
+
+	workerRouter := worker.NewRouter()
+	log.Fatal(http.ListenAndServe(":8081", workerRouter))
 }
