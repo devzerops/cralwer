@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  server:
+    build: ./server
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+
+  worker:
+    build: ./worker
+    ports:
+      - "8081:8081"
+    environment:
+      - NODE_ENV=production
