@@ -41,11 +41,11 @@ func (wc *WorkerCrawler) Crawl() {
 	}
 
 	for _, urlObj := range urls {
-		wc.crawlURL(urlObj.Address)
+		wc.CrawlURL(urlObj.Address)
 	}
 }
 
-func (wc *WorkerCrawler) crawlURL(startURL string) {
+func (wc *WorkerCrawler) CrawlURL(startURL string) {
 	collector := colly.NewCollector()
 
 	baseURL, err := url.Parse(startURL)
