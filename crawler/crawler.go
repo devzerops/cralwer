@@ -6,6 +6,7 @@ import (
     "github.com/gocolly/colly/v2"
     "log"
     "net/url"
+    "strings"
 )
 
 type Crawler struct {
@@ -29,6 +30,11 @@ func (c *Crawler) Crawl(startURL string) {
     // On every a element which has href attribute call callback
     collector.OnHTML("a[href]", func(e *colly.HTMLElement) {
         link := e.Attr("href")
+        // Ignore URLs with fragments
+        if strings.Contains(link, "#") {
+            log.Printf("Ignoring link with fragment: %s", link)
+            return
+        }
         // Parse the link URL
         linkURL, err := url.Parse(link)
         if err != nil {
@@ -41,6 +47,7 @@ func (c *Crawler) Crawl(startURL string) {
         // Save the link to storage
         c.Storage.Save(models.URL{Address: absoluteURL, Priority: 1})
     })
+
 
     // Start scraping the URL
     collector.Visit(startURL)
