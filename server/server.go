@@ -1,12 +1,24 @@
 package server
 
 import (
+    "encoding/json"
     "fmt"
+    "io/ioutil"
     "log"
     "net/http"
     "github.com/gorilla/mux"
     "time"
 )
+
+type Usage struct {
+    Message      string `json:"message"`
+    Endpoints    []struct {
+        Method      string `json:"method"`
+        Path        string `json:"path"`
+        Description string `json:"description"`
+    } `json:"endpoints"`
+    ExampleUsage string `json:"example_usage"`
+}
 
 func NewRouter() *mux.Router {
     router := mux.NewRouter().StrictSlash(true)
@@ -26,14 +38,22 @@ func loggingMiddleware(next http.Handler) http.Handler {
 }
 
 func UsageHandler(w http.ResponseWriter, r *http.Request) {
-    usage := `
-    Welcome to the Distributed Crawler API!
+    data, err := ioutil.ReadFile("config/usage.json")
+    if err != nil {
+        http.Error(w, "Unable to read usage file", http.StatusInternalServerError)
+        return
+    }
 
-    Available endpoints:
-    POST /crawl - Start crawling a URL. Example request body: {"url": "http://example.com"}
+    var usage Usage
+    err = json.Unmarshal(data, &usage)
+    if err != nil {
+        http.Error(w, "Unable to parse usage file", http.StatusInternalServerError)
+        return
+    }
 
-    Example usage:
-    curl -X POST -H "Content-Type: application/json" -d '{"url":"http://example.com"}' http://localhost:8080/crawl
-    `
-    fmt.Fprintln(w, usage)
+    fmt.Fprintf(w, "%s\n\nAvailable endpoints:\n", usage.Message)
+    for _, endpoint := range usage.Endpoints {
+        fmt.Fprintf(w, "%s %s - %s\n", endpoint.Method, endpoint.Path, endpoint.Description)
+    }
+    fmt.Fprintf(w, "\nExample usage:\n%s\n", usage.ExampleUsage)
 }

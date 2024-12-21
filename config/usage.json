@@ -1,0 +1,11 @@
+{
+    "message": "Welcome to the Distributed Crawler API!",
+    "endpoints": [
+        {
+            "method": "POST",
+            "path": "/crawl",
+            "description": "Start crawling a URL. Example request body: {\"url\": \"http://google.com\"}"
+        }
+    ],
+    "example_usage": "curl -X POST -H \"Content-Type: application/json\" -d '{\"url\":\"http://google.com\"}' http://localhost:8080/crawl"
+}
