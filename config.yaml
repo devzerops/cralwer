@@ -1,0 +1,24 @@
+redis:
+  address: "127.0.0.1"
+  port: 6379
+
+
+server:
+  address: "127.0.0.1"
+  port: 8080
+  protocol: "http"
+  env: "production"
+
+worker:
+  address: "127.0.0.1"
+  port: 8081
+  protocol: "http"
+  env: "production"
+  
+  monitoring:
+    timeout: 5
+    RequestInterval: 10
+  
+  crawling:
+    RequestInterval: 10
+    RequestPerBatch: 3

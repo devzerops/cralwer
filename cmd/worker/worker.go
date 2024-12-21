@@ -1,20 +1,23 @@
 package worker
 
 import (
+	"distributed-crawler/config"
 	"distributed-crawler/crawler"
 	"time"
-    "github.com/gorilla/mux"
+    "strconv"
+	"github.com/gorilla/mux"
 )
 
 func NewRouter() *mux.Router {
-    serverApi := "http://localhost:8080/"
-	
-	query := "next?count="
+    serverApi := config.ServerAddress
+	nextQuery := "next?count="
+    count := 10
+    delay := 10
 
-    workerCrawler := crawler.NewWorkerCrawler(serverApi+query)
+    workerCrawler := crawler.NewWorkerCrawler(serverApi + nextQuery + strconv.Itoa(count))
 
     for {
         workerCrawler.Crawl()
-        time.Sleep(10 * time.Second) // Adjust the interval as needed
+        time.Sleep(time.Duration(delay) * time.Second)// Adjust the interval as needed
     }
 }

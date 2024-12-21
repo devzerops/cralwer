@@ -14,4 +14,4 @@ RUN go build -o /worker
 
 EXPOSE 8081
 
-CMD [ "/worker" ]\
+CMD [ "/worker" ]

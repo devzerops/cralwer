@@ -1,26 +1,42 @@
 package config
 
 import (
-    "os"
     "log"
-    "github.com/joho/godotenv"
-)
-
-const (
-    MaxRequestsPerSite = 3
-    RequestInterval    = 10 // seconds
+    "os"
+    "gopkg.in/yaml.v2"
+    "strconv"
 )
 
 var RedisAddress string
+var ServerAddress string
+
+type Config struct {
+    Redis struct {
+        Address string `yaml:"address"`
+        Port    int    `yaml:"port"`
+    } `yaml:"redis"`
+    Server struct {
+        Address  string `yaml:"address"`
+        Port     int    `yaml:"port"`
+        Protocol string `yaml:"protocol"`
+    } `yaml:"server"`
+}
 
 func init() {
-    // .env 파일 로드
-    err := godotenv.Load(".env")
+    // config.yaml 파일 로드
+    configFile, err := os.ReadFile("config.yaml")
     if err != nil {
-        log.Fatalf("Error loading .env file: %v", err)
+        log.Fatalf("Error reading config.yaml file: %v", err)
     }
 
-    RedisAddress = getEnv("REDIS_ADDRESS", "localhost:6379")
+    var config Config
+    err = yaml.Unmarshal(configFile, &config)
+    if err != nil {
+        log.Fatalf("Error parsing config.yaml file: %v", err)
+    }
+    
+    RedisAddress = getEnv("REDIS_ADDRESS", config.Redis.Address + ":" + strconv.Itoa(config.Redis.Port))
+    ServerAddress = getEnv("SERVER_ADDRESS", config.Server.Protocol + "://" + config.Server.Address + ":" + strconv.Itoa(config.Server.Port))
 }
 
 func getEnv(key, defaultValue string) string {
