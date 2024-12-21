@@ -1,55 +1,61 @@
 package crawler
 
 import (
-	"distributed-crawler/internal/storage"
 	"distributed-crawler/internal/models"
+	"distributed-crawler/internal/storage"
+	"distributed-crawler/internal/utils"
 	"log"
-	"net/url"
-	"strings"
-
-	"github.com/gocolly/colly/v2"
+	"net"
 )
 
 type Crawler struct {
-	Storage storage.Storage
+	Storage     storage.Storage
+	DNSResolver *utils.DNSResolver
 }
 
 func NewCrawler(storage storage.Storage) *Crawler {
-	return &Crawler{Storage: storage}
+	return &Crawler{
+		Storage:     storage,
+		DNSResolver: utils.NewDNSResolver(),
+	}
 }
 
 func (c *Crawler) Crawl(startURL string) {
-	// Create a new collector
-	collector := colly.NewCollector()
-
-	// Parse the start URL
-	baseURL, err := url.Parse(startURL)
-	if err != nil {
-		log.Fatalf("Invalid start URL: %v", err)
-	}
 	c.Storage.Save(models.URL{Address: startURL, Priority: 0})
+	CrawlURL(startURL, c.handleLink)
+}
 
-	// On every a element which has href attribute call callback
-	collector.OnHTML("a[href]", func(e *colly.HTMLElement) {
-		link := e.Attr("href")
-		// Ignore URLs with fragments
-		if strings.Contains(link, "#") {
-			log.Printf("Ignoring link with fragment: %s", link)
-			return
-		}
-		// Parse the link URL
-		linkURL, err := url.Parse(link)
-		if err != nil {
-			log.Printf("Invalid link URL: %v", err)
-			return
-		}
-		// Resolve the link URL to an absolute URL
-		absoluteURL := baseURL.ResolveReference(linkURL).String()
-		log.Printf("Found link: %s", absoluteURL)
-		// Save the link to storage
-		c.Storage.Save(models.URL{Address: absoluteURL, Priority: 1})
-	})
+func (c *Crawler) handleLink(link string) {
+	hosts, err := c.DNSResolver.LookupHost(link)
+	if err != nil {
+		log.Printf("DNS lookup failed for %s: %v", link, err)
+		return
+	}
+	for _, host := range hosts {
+		c.resolveAndSaveHost(host)
+	}
+	c.Storage.Save(models.URL{Address: link, Priority: 1})
+}
 
-	// Start scraping the URL
-	collector.Visit(startURL)
+func (c *Crawler) resolveAndSaveHost(host string) {
+	ips, err := net.LookupIP(host)
+	if err != nil {
+		log.Printf("IP lookup failed for %s: %v", host, err)
+		return
+	}
+	for _, ip := range ips {
+		c.reverseLookupAndSaveIP(ip)
+	}
+}
+
+func (c *Crawler) reverseLookupAndSaveIP(ip net.IP) {
+	names, err := net.LookupAddr(ip.String())
+	if err != nil {
+		log.Printf("Reverse DNS lookup failed for %s: %v", ip, err)
+		return
+	}
+	for _, name := range names {
+		log.Printf("Resolved name for IP %s: %s", ip, name)
+		c.Storage.Save(models.URL{Address: name, Priority: 1})
+	}
 }
