@@ -2,7 +2,6 @@ package server
 
 import (
 	"distributed-crawler/crawler"
-	"distributed-crawler/storage"
 	"encoding/json"
 	"net/http"
 )
@@ -18,8 +17,7 @@ func CrawlHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	storage := storage.NewRedisStorage()
-	c := crawler.NewCrawler(storage)
+	c := crawler.NewCrawler(redisStorage)
 	c.Crawl(req.URL)
 
 	w.WriteHeader(http.StatusOK)

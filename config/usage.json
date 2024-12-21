@@ -5,7 +5,12 @@
             "method": "POST",
             "path": "/crawl",
             "description": "Start crawling a URL. Example request body: {\"url\": \"http://google.com\"}"
+        },
+        {
+            "method": "GET",
+            "path": "/status",
+            "description": "Get the total number of items in the Redis queue."
         }
     ],
-    "example_usage": "curl -X POST -H \"Content-Type: application/json\" -d '{\"url\":\"http://google.com\"}' http://localhost:8080/crawl"
+    "example_usage": "curl -X POST -H \"Content-Type: application/json\" -d '{\"url\":\"http://google.com\"}' http://localhost:8080/crawl\ncurl http://localhost:8080/status"
 }

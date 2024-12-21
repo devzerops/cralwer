@@ -8,6 +8,7 @@ import (
     "net/http"
     "github.com/gorilla/mux"
     "time"
+    "distributed-crawler/storage"
 )
 
 type Usage struct {
@@ -20,11 +21,18 @@ type Usage struct {
     ExampleUsage string `json:"example_usage"`
 }
 
+var redisStorage *storage.RedisStorage
+
+func init() {
+    redisStorage = storage.NewRedisStorage()
+}
+
 func NewRouter() *mux.Router {
     router := mux.NewRouter().StrictSlash(true)
     router.Use(loggingMiddleware)
     router.HandleFunc("/crawl", CrawlHandler).Methods("POST")
     router.HandleFunc("/", UsageHandler).Methods("GET")
+    router.HandleFunc("/status", StatusHandler).Methods("GET")
     return router
 }
 
@@ -56,4 +64,9 @@ func UsageHandler(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintf(w, "%s %s - %s\n", endpoint.Method, endpoint.Path, endpoint.Description)
     }
     fmt.Fprintf(w, "\nExample usage:\n%s\n", usage.ExampleUsage)
+}
+
+func StatusHandler(w http.ResponseWriter, r *http.Request) {
+    queueLength := redisStorage.QueueLength()
+    fmt.Fprintf(w, "Total items in queue: %d\n", queueLength)
 }

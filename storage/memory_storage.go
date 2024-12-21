@@ -46,3 +46,12 @@ func (s *RedisStorage) Exists(url string) bool {
     }
     return exists > 0
 }
+
+func (s *RedisStorage) QueueLength() int64 {
+    length, err := s.client.DBSize(s.ctx).Result()
+    if err != nil {
+        log.Printf("Error getting queue length from Redis: %v", err)
+        return 0
+    }
+    return length
+}
