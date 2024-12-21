@@ -1,6 +1,6 @@
 package storage
 
-import "distributed-crawler/models"
+import "distributed-crawler/internal/models"
 
 type Storage interface {
 	Save(url models.URL)

@@ -1,13 +1,13 @@
 package server
 
 import (
-	"distributed-crawler/crawler"
-	"distributed-crawler/models"
+	"distributed-crawler/internal/crawler"
+	"distributed-crawler/internal/models"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strconv"
+	"os"
 )
 
 type CrawlRequest struct {
@@ -32,7 +32,7 @@ func CrawlHandler(w http.ResponseWriter, r *http.Request) {
 // @GET /
 // UsageHandler handles the "/" endpoint, providing API usage information.
 func GuideHandler(w http.ResponseWriter, r *http.Request) {
-	data, err := ioutil.ReadFile("config/usage.json")
+	data, err := os.ReadFile("internal/config/usage.json")
 	if err != nil {
 		http.Error(w, "Unable to read usage file", http.StatusInternalServerError)
 		return
