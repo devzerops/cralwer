@@ -10,13 +10,13 @@ import (
 
 var cassandraSession *gocql.Session
 
-func InitCassandra(clusterIPs []string, keyspace string) error {
-	cluster := gocql.NewCluster(clusterIPs...)
+func InitCassandra(cassandraIP, keyspace string) error {
+	cluster := gocql.NewCluster(cassandraIP)
 	cluster.Keyspace = keyspace
 	cluster.Consistency = gocql.Quorum
 	var err error
 	cassandraSession, err = cluster.CreateSession()
-	if err != nil {
+	if (err != nil) {
 		return err
 	}
 	return nil
