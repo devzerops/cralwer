@@ -12,3 +12,9 @@ type CrawlResult struct {
 	Links []string `json:"links"`
 	Error string   `json:"error,omitempty"`
 }
+
+type Process struct {
+	ID       string   `json:"id"`
+	Type	 string   `json:"type"`
+	Platform string   `json:"platform"`
+}
