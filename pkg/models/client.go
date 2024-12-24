@@ -5,6 +5,11 @@ type ClientInfo struct {
 	OS       string `json:"os"`
 	Hostname string `json:"hostname"`
 }
+type Worker struct {
+	IP        string
+	Port      string
+	ProcessID string
+}
 
 type K8SClientInfo struct {
 	ClientInfo

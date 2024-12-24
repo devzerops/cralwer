@@ -58,3 +58,18 @@ func InfoHandler() http.Handler {
         w.Write(clientInfoJSON)
     }))
 }
+
+func InfoIPHandler() http.Handler {
+    return utils.LoggingMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        ip := utils.GetLocalIP()
+        ipJSON, err := json.Marshal(map[string]string{"ip": ip})
+        if err != nil {
+            http.Error(w, "Failed to marshal IP", http.StatusInternalServerError)
+            return
+        }
+
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(http.StatusOK)
+        w.Write(ipJSON)
+    }))
+}
