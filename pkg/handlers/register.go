@@ -5,9 +5,9 @@ import (
 )
 
 func RegisterCommonHandlers(r *mux.Router) {
-	r.HandleFunc("/info", InfoHandler).Methods("GET")
-	r.HandleFunc("/config", ConfigHandler).Methods("GET")
-	r.HandleFunc("/config", ConfigHandler).Methods("POST")
-	r.HandleFunc("/health", HealthHandler).Methods("GET")
-	r.HandleFunc("/status", StatusHandler).Methods("GET")
+	r.Handle("/info", InfoHandler()).Methods("GET")
+	r.Handle("/config", ConfigHandler()).Methods("GET")
+	r.Handle("/config", ConfigHandler()).Methods("POST")
+	r.Handle("/health", HealthHandler()).Methods("GET")
+	r.Handle("/status", StatusHandler()).Methods("GET")
 }
