@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var hostAddr = "155.248.164.28"
+var hostAddr = "127.0.0.1"
 
 // CassandraConnection tests the connection to Cassandra.
 func TestCassandraConnection(t *testing.T) {
