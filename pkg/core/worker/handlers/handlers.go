@@ -1,44 +1,41 @@
 package handlers
 
 import (
+	"distributed-crawler/m/pkg/models"
 	"github.com/gocolly/colly"
-	"net/http"
+	"log"
 )
 
-func DownloadHandler(w http.ResponseWriter, r *http.Request) {
-	url := r.URL.Query().Get("url")
-	if url == "" {
-		http.Error(w, "URL parameter is missing", http.StatusBadRequest)
-		return
-	}
+type Worker struct{
+	*models.Worker
+	Logger *log.Logger
+}
 
+type WorkerConfig struct{
+	*models.WorkerConfig
+}
+
+func (w *Worker) DownloadHTML(url string) (string, error) {
 	c := colly.NewCollector()
-	c.OnResponse(func(response *colly.Response) {
-		w.Write(response.Body)
+
+	var htmlContent string
+
+	c.OnHTML("html", func(e *colly.HTMLElement) {
+		var err error
+		htmlContent, err = e.DOM.Html()
+		if err != nil {
+			w.Logger.Println("Error getting HTML content:", err)
+		}
+	})
+
+	c.OnError(func(_ *colly.Response, err error) {
+		w.Logger.Println("Something went wrong:", err)
 	})
 
 	err := c.Visit(url)
 	if err != nil {
-		http.Error(w, "Failed to download the page", http.StatusInternalServerError)
+		return "", err
 	}
+
+	return htmlContent, nil
 }
-
-func ParseHandler(w http.ResponseWriter, r *http.Request) {
-	url := r.URL.Query().Get("url")
-	if url == "" {
-		http.Error(w, "URL parameter is missing", http.StatusBadRequest)
-		return
-	}
-
-	c := colly.NewCollector()
-	c.OnHTML("title", func(e *colly.HTMLElement) {
-		w.Write([]byte(e.Text))
-	})
-
-	err := c.Visit(url)
-	if err != nil {
-		http.Error(w, "Failed to parse the page", http.StatusInternalServerError)
-	}
-}
-
-

@@ -15,6 +15,15 @@ type CrawlResult struct {
 
 type Process struct {
 	ID       string   `json:"id"`
-	Type	 string   `json:"type"`
+	Type     string   `json:"type"`
 	Platform string   `json:"platform"`
+}
+
+type Crawler interface {
+	Crawl(request CrawlRequest) (CrawlResult, error)
+}
+
+type ProcessManager interface {
+	StartProcess(process Process) error
+	StopProcess(processID string) error
 }

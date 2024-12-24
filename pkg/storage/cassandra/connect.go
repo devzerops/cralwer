@@ -24,7 +24,9 @@ func init() {
 	}
 }
 
-func InitCassandra(keyspace string, overrideIP ...string) error {
+type CassandraStorage struct{}
+
+func (cs *CassandraStorage) Init(keyspace string, overrideIP ...string) error {
 	ip := cassandraIP
 	if len(overrideIP) > 0 {
 		ip = overrideIP[0]
@@ -41,13 +43,13 @@ func InitCassandra(keyspace string, overrideIP ...string) error {
 	return nil
 }
 
-func CloseCassandra() {
+func (cs *CassandraStorage) Close() {
 	if cassandraSession != nil {
 		cassandraSession.Close()
 	}
 }
 
-func UpdateProcessInfo(processID, ip, status string) error {
+func (cs *CassandraStorage) UpdateProcessInfo(processID, ip, status string) error {
 	if cassandraSession == nil {
 		return fmt.Errorf("cassandra session is not initialized")
 	}
@@ -61,7 +63,7 @@ func UpdateProcessInfo(processID, ip, status string) error {
 	return nil
 }
 
-func DeleteProcessInfo(processID string) error {
+func (cs *CassandraStorage) DeleteProcessInfo(processID string) error {
 	if cassandraSession == nil {
 		return fmt.Errorf("cassandra session is not initialized")
 	}
