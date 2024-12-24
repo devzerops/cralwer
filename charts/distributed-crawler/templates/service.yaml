@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "distributed-crawler.name" . }}-server
+  labels:
+    {{- include "distributed-crawler.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.server.service.type }}
+  ports:
+    - port: {{ .Values.server.service.port }}
+      targetPort: {{ .Values.server.service.port }}
+  selector:
+    app: {{ include "distributed-crawler.name" . }}-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "distributed-crawler.name" . }}-worker
+  labels:
+    {{- include "distributed-crawler.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.worker.service.type }}
+  ports:
+    - port: {{ .Values.worker.service.port }}
+      targetPort: {{ .Values.worker.service.port }}
+  selector:
+    app: {{ include "distributed-crawler.name" . }}-worker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "distributed-crawler.name" . }}-manager
+  labels:
+    {{- include "distributed-crawler.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.manager.service.type }}
+  ports:
+    - port: {{ .Values.manager.service.port }}
+      targetPort: {{ .Values.manager.service.port }}
+  selector:
+    app: {{ include "distributed-crawler.name" . }}-manager

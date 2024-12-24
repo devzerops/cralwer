@@ -1,0 +1,37 @@
+{{- if .Values.cassandra.enable }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "distributed-crawler.name" . }}-cassandra
+  labels:
+    {{- include "distributed-crawler.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "distributed-crawler.name" . }}-cassandra
+  template:
+    metadata:
+      labels:
+        app: {{ include "distributed-crawler.name" . }}-cassandra
+    spec:
+      containers:
+        - name: cassandra
+          image: "{{ .Values.cassandra.image }}"
+          ports:
+            - containerPort: {{ .Values.cassandra.service.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "distributed-crawler.name" . }}-cassandra
+  labels:
+    {{- include "distributed-crawler.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.cassandra.service.type }}
+  ports:
+    - port: {{ .Values.cassandra.service.port }}
+      targetPort: {{ .Values.cassandra.service.port }}
+  selector:
+    app: {{ include "distributed-crawler.name" . }}-cassandra
+{{- end }}
