@@ -5,8 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"os"
-
 	"github.com/go-redis/redis/v8"
 	"github.com/gocql/gocql"
 	"github.com/segmentio/kafka-go"
@@ -14,16 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var hostAddr string
+var hostAddr = "155.248.164.28"
 
-func init() {
-	if os.Getenv(".env") == "enabled" {
-		hostAddr = os.Getenv("DB_HOST_ADDR")
-	} else {
-		hostAddr = "155.248.164.28"
-	}
-}
-
+// CassandraConnection tests the connection to Cassandra.
 func TestCassandraConnection(t *testing.T) {
 	cluster := gocql.NewCluster(hostAddr)
 	cluster.Keyspace = "system"
@@ -39,6 +30,7 @@ func TestCassandraConnection(t *testing.T) {
 	}
 }
 
+// RedisConnection tests the connection to Redis.
 func TestRedisConnection(t *testing.T) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr: hostAddr + ":6379",
@@ -52,6 +44,7 @@ func TestRedisConnection(t *testing.T) {
 	}
 }
 
+// MongoDBConnection tests the connection to MongoDB.
 func TestMongoDBConnection(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -66,7 +59,7 @@ func TestMongoDBConnection(t *testing.T) {
 		}
 	}()
 }
-
+// KafkaConnection tests the connection to Kafka.
 func TestKafkaConnection(t *testing.T) {
 	conn, err := kafka.Dial("tcp", hostAddr+":9092")
 	if err != nil {

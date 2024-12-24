@@ -24,7 +24,7 @@ type Worker struct {
 
 func NewWorker(config WorkerConfig) *Worker {
 	// Initialize Cassandra
-	err := cassandra.InitCassandra(config.CassandraIP, config.CassandraKeyspace)
+	err := cassandra.InitCassandra(config.CassandraKeyspace)
 	if err != nil {
 		log.Fatalf("Failed to initialize Cassandra: %v", err)
 	}
