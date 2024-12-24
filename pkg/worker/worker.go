@@ -2,7 +2,7 @@ package worker
 
 import (
 	"distributed-crawler/m/pkg/models"
-	"distributed-crawler/m/pkg/storage"
+	"distributed-crawler/m/pkg/storage/cassandra"
 	"log"
 	"time"
 )
@@ -16,26 +16,26 @@ type WorkerConfig struct {
 }
 
 type Worker struct {
-	models.Worker
+	Port      string
+	ProcessID string
+	IP        string
 	stopHeartbeat chan bool
 }
 
 func NewWorker(config WorkerConfig) *Worker {
-	// Cassandra 초기화
-	err := storage.InitCassandra(config.CassandraIP, config.CassandraKeyspace)
-	if (err != nil) {
+	// Initialize Cassandra
+	err := cassandra.InitCassandra(config.CassandraIP, config.CassandraKeyspace)
+	if err != nil {
 		log.Fatalf("Failed to initialize Cassandra: %v", err)
 	}
 
 	worker := &Worker{
-		Worker: models.Worker{
-			Port:      config.Port,
-			ProcessID: config.ProcessID,
-			IP:        config.IP,
-		},
+		Port:          config.Port,
+		ProcessID:     config.ProcessID,
+		IP:            config.IP,
 		stopHeartbeat: make(chan bool),
 	}
-	err = storage.UpdateProcessInfo(config.ProcessID, config.IP, "running")
+	err = cassandra.UpdateProcessInfo(config.ProcessID, config.IP, "running")
 	if err != nil {
 		log.Printf("Failed to update process info: %v", err)
 	}
@@ -52,7 +52,7 @@ func (w *Worker) startHeartbeat() {
 	for {
 		select {
 		case <-ticker.C:
-			err := storage.UpdateProcessInfo(w.ProcessID, w.IP, "running")
+			err := cassandra.UpdateProcessInfo(w.ProcessID, w.IP, "running")
 			if err != nil {
 				log.Printf("Failed to update heartbeat: %v", err)
 			}
@@ -64,19 +64,19 @@ func (w *Worker) startHeartbeat() {
 
 func (w *Worker) Close() {
 	w.stopHeartbeat <- true
-	err := storage.DeleteProcessInfo(w.ProcessID)
+	err := cassandra.DeleteProcessInfo(w.ProcessID)
 	if err != nil {
 		log.Printf("Failed to delete process info: %v", err)
 	}
-	storage.CloseCassandra()
+	cassandra.CloseCassandra()
 }
 
 func (w *Worker) Download(url string) ([]byte, error) {
-	// HTML 다운로드 로직 구현
+	// Implement HTML download logic
 	return nil, nil
 }
 
 func (w *Worker) Parse(html []byte) (*models.CrawlResult, error) {
-	// HTML 파싱 로직 구현
+	// Implement HTML parsing logic
 	return nil, nil
 }

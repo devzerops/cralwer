@@ -9,10 +9,10 @@ import (
     "github.com/joho/godotenv"
 )
 
-func InfoHandler() http.Handler {
+func InfoHandler(envPath string) http.Handler {
     return utils.LoggingMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         // .env 파일 로드
-        err := godotenv.Load()
+        err := godotenv.Load(envPath)
         if (err != nil) {
             http.Error(w, "Failed to load .env file", http.StatusInternalServerError)
             return

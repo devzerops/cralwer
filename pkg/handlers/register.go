@@ -5,7 +5,7 @@ import (
 )
 
 func RegisterCommonHandlers(r *mux.Router) {
-	r.Handle("/info", InfoHandler()).Methods("GET")
+	r.Handle("/info", InfoHandler(".env")).Methods("GET")
 	r.Handle("/info/ip", InfoIPHandler()).Methods("GET")
 	r.Handle("/config", ConfigHandler()).Methods("GET")
 	r.Handle("/config", ConfigHandler()).Methods("POST")

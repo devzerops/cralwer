@@ -1,4 +1,5 @@
-package storage
+
+package cassandra
 
 import (
 	"fmt"
