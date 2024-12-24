@@ -1,0 +1,37 @@
+{{- if .Values.kafka.enable }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "distributed-crawler.name" . }}-kafka
+  labels:
+    {{- include "distributed-crawler.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "distributed-crawler.name" . }}-kafka
+  template:
+    metadata:
+      labels:
+        app: {{ include "distributed-crawler.name" . }}-kafka
+    spec:
+      containers:
+        - name: kafka
+          image: "{{ .Values.kafka.image }}"
+          ports:
+            - containerPort: {{ .Values.kafka.service.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "distributed-crawler.name" . }}-kafka
+  labels:
+    {{- include "distributed-crawler.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.kafka.service.type }}
+  ports:
+    - port: {{ .Values.kafka.service.port }}
+      targetPort: {{ .Values.kafka.service.port }}
+  selector:
+    app: {{ include "distributed-crawler.name" . }}-kafka
+{{- end }}

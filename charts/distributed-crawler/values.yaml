@@ -1,0 +1,48 @@
+image:
+  repository: myrepo/distributed-crawler
+  pullPolicy: IfNotPresent
+  tag: "1.0"
+
+server:
+  replicaCount: 1
+  image: myrepo/distributed-crawler-manager/server # default Image repository
+  service:
+    type: ClusterIP
+    port: 80
+
+worker:
+  replicaCount: 1
+  image: myrepo/distributed-crawler-manager # default Image repository
+  service:
+    type: ClusterIP
+    port: 80
+
+manager:
+  replicaCount: 1
+  image: myrepo/distributed-crawler-manager # default Image repository
+  service:
+    type: ClusterIP
+    port: 80
+
+cassandra:
+  enable: false # false
+  image: cassandra:5.0
+  service:
+    type: ClusterIP
+    port: 9042
+
+redis:
+  enable: false # false
+  image: redis:latest
+  service:
+    type: ClusterIP
+    port: 6379
+
+kafka:
+  enable: false # false
+  image: wurstmeister/kafka:2.12-2.2.1
+  service:
+    type: ClusterIP
+    port: 9092
+
+resources: {}
