@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/mux"
 
 	commonHandlers "distributed-crawler/m/pkg/handlers"
-	serverHandlers "distributed-crawler/m/pkg/server/handlers"
+	serverHandlers "distributed-crawler/m/pkg/core/server/handlers"
 )
 
 func main() {

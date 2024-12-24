@@ -1,9 +1,9 @@
 package main
 
 import (
-	"distributed-crawler/m/pkg/worker"
+	"distributed-crawler/m/pkg/core/worker"
 	commonHandlers "distributed-crawler/m/pkg/handlers"
-	workerHandlers "distributed-crawler/m/pkg/worker/handlers"
+	workerHandlers "distributed-crawler/m/pkg/core/worker/handlers"
 	"log"
 	"net/http"
 	"os"
